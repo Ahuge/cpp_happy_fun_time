@@ -20,10 +20,13 @@ namespace simple_math {
         return l - r;
     };
 
-    template <typename T>
-    T divide (T const& l, T const& r)  throw(T) {
-        return supports::divide(l, r); // Attempt to use the "supports" namespace to fallback if it doesnt exist
-
+    template <typename T> typename std::enable_if<supports::divide<T>::value, T>::type divide(T const& l, T const& r)
+    {
+        return l / r;
+    };
+    template <typename T> typename std::enable_if<!supports::divide<T>::value, T>::type divide(T const& l, T const& r)
+    {
+        throw l;
     };
 
     template <typename T>
