@@ -2,13 +2,19 @@
 // Created by ahuge on 27/01/17.
 //
 
-
-// Grabbed from
-// http://stackoverflow.com/questions/17201329/c11-ways-of-finding-if-a-type-has-member-function-or-supports-operator
-// I dont really understand how it works.
-// It appears to attempt to declare the template as the function, if it exists, and the guy said something about it falling back.
+// Grabbed from Jean Guegant's blog.
 namespace supports {
-    template <typename X, typename Y>
-    static auto divide(const X& x, const Y& y) -> decltype(x / y);
-};
+    template <class T> struct divide
+    {
+        template <typename C> static constexpr decltype(std::declval<C>() / std::declval<C>(), bool()) test(int)
+        {
+            return true;
+        }
+        template <typename C> static constexpr bool test(...)
+        {
+            return false;
+        }
 
+        static constexpr bool value = test<T>(int());
+    };
+};
